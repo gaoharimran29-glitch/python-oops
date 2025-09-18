@@ -169,6 +169,102 @@ print(Person.name) # Output: Hero
 - Instance methods (`self`) are used when object data is required.
 
 ---
+## Encapsulation
+
+**Encapsulation** is the technique of wrapping data and methods into a single unit (class) and restricting access from outside by using private attributes or methods.
+
+---
+
+## Getter and Setter
+
+### What are Getter and Setter?
+
+- A **getter** is a method that allows you to access (get) the value of a private attribute.  
+- A **setter** is a method that allows you to update (set) the value of a private attribute while maintaining control over how it is modified.  
+
+They are useful for **encapsulation**, because they provide controlled access to private attributes.
+
+---
+
+### Example Without Getter and Setter
+
+```python
+class Student:
+    def __init__(self, name, age):
+        self.__name = name    # private attribute
+        self.__age = age      # private attribute
+
+s1 = Student("Karan", 20)
+print(s1.__age)   # It will give error because __age is private
+```
+
+---
+
+### Example With Getter and Setter
+
+```python
+class Student:
+    def __init__(self, name, age):
+        self.__name = name
+        self.__age = age
+
+    # Getter for age
+    def get_age(self):
+        return self.__age
+
+    # Setter for age
+    def set_age(self, new_age):
+        if new_age > 0:   # validation check
+            self.__age = new_age
+        else:
+            print("Invalid age")
+
+s1 = Student("Karan", 20)
+print(s1.get_age())   # Output: 20
+
+s1.set_age(25)
+print(s1.get_age())   # Output: 25
+
+s1.set_age(-5)        # Output: Invalid age
+print(s1.get_age())   # Output: 25
+```
+
+---
+
+### Example Using `@property` (Pythonic Way)
+
+Instead of writing separate `get_` and `set_` methods, Python provides a more elegant way using `@property` and `@<attr>.setter`.
+
+```python
+class Student:
+    def __init__(self, name, age):
+        self.__name = name
+        self.__age = age
+
+    # Getter
+    @property
+    def age(self):
+        return self.__age
+
+    # Setter
+    @age.setter
+    def age(self, new_age):
+        if new_age > 0:
+            self.__age = new_age
+        else:
+            print("Invalid age")
+
+s1 = Student("Karan", 20)
+print(s1.age)    # Output: 20
+
+s1.age = 22
+print(s1.age)    # Output: 22
+
+s1.age = -10     # Output: Invalid age
+print(s1.age)    # Output: 22
+```
+
+---
 
 ## `@property`
 
@@ -330,9 +426,95 @@ print(car1.type)  # Output: electric
 **Abstraction** hides unnecessary details from the user and only shows the relevant information. It helps reduce complexity by exposing only essential features.
 
 ---
+# Polymorphism
 
-## Encapsulation
+### What is Polymorphism?
+- The word **polymorphism** means *"many forms"*.
+- In programming, it refers to methods, functions, or operators that can have the **same name but behave differently** depending on the object or data type.
 
-**Encapsulation** is the technique of wrapping data and methods into a single unit (class) and restricting access from outside by using private attributes or methods.
+---
+
+## Example of Polymorphism with Operators
+
+```python
+print(1 + 2)           # Output: 3   (integer addition)
+print("Hi" + "Hello")  # Output: HiHello   (string concatenation)
+```
+
+Here, the `+` operator behaves differently for integers and strings.  
+This is called **operator overloading**.
+
+---
+
+## Operator Overloading in Classes
+
+We can define our own behavior for operators by using **dunder (magic) functions**.
+
+### Example: Complex Number Class
+
+```python
+class Complex:
+    def __init__(self, real, img):
+        self.real = real
+        self.img = img
+
+    def showNumber(self):
+        print(self.real, "i +", self.img, "j")
+
+    # Dunder method for addition
+    def __add__(num1, num2):
+        newReal = num1.real + num2.real
+        newImg = num1.img + num2.img
+        return Complex(newReal, newImg)
+
+    # Dunder method for subtraction
+    def __sub__(num1, num2):
+        newReal = num1.real - num2.real
+        newImg = num1.img - num2.img
+        return Complex(newReal, newImg)
+
+
+# Creating objects
+num1 = Complex(4, 3)
+num1.showNumber()   # Output: 4 i + 3 j
+
+num2 = Complex(3, 4)
+num2.showNumber()   # Output: 3 i + 4 j
+
+# Using overloaded + operator
+num3 = num1 + num2
+num3.showNumber()   # Output: 7 i + 7 j
+
+# Using overloaded - operator
+num4 = num1 - num2
+num4.showNumber()   # Output: 1 i + -1 j
+```
+
+---
+
+## What are Dunder (Magic) Functions?
+
+- **Dunder** functions are special methods in Python with names that begin and end with **double underscores** (e.g., `__init__`, `__add__`).
+- They allow us to define or customize the behavior of built-in operations (like `+`, `-`, `len()`, `str()`).
+
+---
+
+### Commonly Used Dunder Functions
+
+| Dunder Function | Description | Example |
+|-----------------|-------------|---------|
+| `__init__`      | Constructor, called when an object is created | `obj = MyClass()` |
+| `__str__`       | Defines the string representation of an object | `print(obj)` |
+| `__len__`       | Returns the length of an object | `len(obj)` |
+| `__add__`       | Defines behavior for `+` operator | `obj1 + obj2` |
+| `__sub__`       | Defines behavior for `-` operator | `obj1 - obj2` |
+| `__mul__`       | Defines behavior for `*` operator | `obj1 * obj2` |
+| `__truediv__`   | Defines behavior for `/` operator | `obj1 / obj2` |
+| `__eq__`        | Defines behavior for `==` comparison | `obj1 == obj2` |
+| `__lt__`        | Defines behavior for `<` comparison | `obj1 < obj2` |
+| `__gt__`        | Defines behavior for `>` comparison | `obj1 > obj2` |
+| `__getitem__`   | Used for indexing/slicing | `obj[0]` |
+| `__setitem__`   | Used to assign values with indexing | `obj[0] = val` |
+| `__delitem__`   | Used to delete values with indexing | `del obj[0]` |
 
 ---
